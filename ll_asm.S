@@ -37,6 +37,9 @@ head_null_str:
 .section .text
 
 main:
+    push %rbp
+    mov %rsp, %rbp
+
     lea message(%rip), %rdi # address of string to output
     mov $0xdeadbeef, %rsi
     xor %eax, %eax
@@ -51,7 +54,9 @@ main:
     mov %rax, %rsi
     xor %rax, %rax
     push %rsi
+    sub $8, %rsp
     call printf
+    add $8, %rsp
     pop %rsi
 
     /* rsi = ptr to allocated node */
@@ -72,7 +77,9 @@ main:
     mov %rax, %rsi
     xor %rax, %rax
     push %rsi
+    sub $8, %rsp
     call printf
+    add $8, %rsp
     pop %rsi
 
     /* rsi = ptr to allocated node */
@@ -93,6 +100,7 @@ add_node_err:
     xor %rax, %rax
     call printf
     mov $-1, %rax
+    leave
     ret
 
 malloc_err:
@@ -101,6 +109,7 @@ malloc_err:
     mov $-1, %rax
 
 main_success:
+    leave
     ret
 
 /* C - style parameters: add_node(ptr)
@@ -129,6 +138,8 @@ return_success:
 
 /* iterate through the list and print LOCATION for each node */
 print_list:
+    push %rbp
+    mov %rsp, %rbp
     push %rbx
     push %rsi
     push %rdi
@@ -159,4 +170,5 @@ normal_return:
     pop %rsi
     pop %rdi
     pop %r12
+    leave
     ret
